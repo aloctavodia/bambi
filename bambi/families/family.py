@@ -1,4 +1,11 @@
+from typing import Dict, Union
+
+import numpy as np
+import pymc as pm
+import xarray as xr
+
 from bambi.families.link import Link
+from bambi.utils import get_auxiliary_parameters, get_aliased_name
 
 
 class Family:
@@ -6,31 +13,32 @@ class Family:
 
     Parameters
     ----------
-    name: str
+    name : str
         The name of the family. It can be any string.
-    likelihood: Likelihood
+    likelihood : Likelihood
         A ``bambi.families.Likelihood`` instance specifying the model likelihood function.
-    link: str or Link
-        The name of the link function or a ``bambi.families.Link`` instance. The link function
-        transforms the linear model prediction to the mean parameter of the likelihood function.
+    link : Union[str, Dict[str, Union[str, Link]]]
+        The link function that's used for every parameter in the likelihood function.
+        Keys are the names of the parameters and values are the link functions.
+        These can be a ``str`` with a name or a ``bambi.families.Link`` instance.
+        The link function transforms the linear predictors.
 
     Examples
     --------
-
     >>> import bambi as bmb
 
     Replicate the Gaussian built-in family.
 
     >>> sigma_prior = bmb.Prior("HalfNormal", sigma=1)
-    >>> likelihood = bmb.Likelihood("Gaussian", parent="mu", sigma=sigma_prior)
+    >>> likelihood = bmb.Likelihood("Gaussian", params=["mu", "sigma"], parent="mu")
     >>> family = bmb.Family("gaussian", likelihood, "identity")
-    >>> # Then you can do
-    >>> # bmb.Model("y ~ x", data, family=family)
+    >>> bmb.Model("y ~ x", data, family=family, priors={"sigma": sigma_prior})
 
     Replicate the Bernoulli built-in family.
 
     >>> likelihood = bmb.Likelihood("Bernoulli", parent="p")
     >>> family = bmb.Family("bernoulli", likelihood, "logit")
+    >>> bmb.Model("y ~ x", data, family=family)
     """
 
     SUPPORTED_LINKS = [
@@ -45,49 +53,184 @@ class Family:
         "tan_2",
     ]
 
-    def __init__(self, name, likelihood, link):
+    def __init__(self, name, likelihood, link: Union[str, Dict[str, Union[str, Link]]]):
         self.name = name
         self.likelihood = likelihood
         self.link = link
-        self.aliases = {}
+        self.default_priors = {}
 
     @property
     def link(self):
         return self._link
 
     @link.setter
-    def link(self, x):
-        if isinstance(x, str):
-            self.check_string_link(x)
-            self._link = Link(x)
-        elif isinstance(x, Link):
-            self._link = x
+    def link(self, value):
+        # The name of the link function. It's applied to the parent parameter of the likelihood
+        if isinstance(value, (str, Link)):
+            value = {self.likelihood.parent: value}
+        links = {}
+        for name, link in value.items():
+            if isinstance(link, str):
+                link = self.check_string_link(link, name)
+            elif isinstance(link, Link):
+                pass
+            else:
+                raise ValueError("'.link' must be set to a string or a Link instance.")
+            links[name] = link
+        self._link = links
+
+    def check_string_link(self, link_name, param_name):
+        # When you instantiate Family directly
+        if isinstance(self.SUPPORTED_LINKS, list):
+            supported_links = self.SUPPORTED_LINKS
         else:
-            raise ValueError(".link must be set to a string or a Link instance.")
+            supported_links = self.SUPPORTED_LINKS[param_name]
 
-    def check_string_link(self, link):
-        if not link in self.SUPPORTED_LINKS:
-            raise ValueError(f"Link '{link}' cannot be used with family '{self.name}'")
+        if not link_name in supported_links:
+            raise ValueError(
+                f"Link '{link_name}' cannot be used for '{param_name}' with family "
+                f"'{self.name}'"
+            )
+        return Link(link_name)
 
-    def set_alias(self, name, alias):
-        """Set alias for an auxiliary variable of the family
+    def set_default_priors(self, priors):
+        """Set default priors for non-parent parameters
 
         Parameters
         ----------
-        name: str
-            The name of the variable
-        alias: str
-            The new name for the variable
+        priors : dict
+            The keys are the names of non-parent parameters and the values are their default priors.
         """
-        self.aliases.update({name: alias})
+        auxiliary_parameters = get_auxiliary_parameters(self)
+        priors = {k: v for k, v in priors.items() if k in auxiliary_parameters}
+        self.default_priors.update(priors)
+
+    def posterior_predictive(self, model, posterior, **kwargs):  # pylint: disable = unused-argument
+        """Get draws from the posterior predictive distribution
+
+        This function works for almost all the families. It grabs the draws for the parameters
+        needed in the response distribution, and then gets samples from the posterior predictive
+        distribution using `pm.draw()`. It won't work when the response distribution requires
+        parameters that are not available in `posterior`.
+
+        Parameters
+        ----------
+        model : bambi.Model
+            The model
+        posterior : xr.Dataset
+            The xarray dataset that contains the draws for all the parameters in the posterior.
+            It must contain the parameters that are needed in the distribution of the response, or
+            the parameters that allow to derive them.
+
+        Returns
+        -------
+        xr.DataArray
+            A data array with the draws from the posterior predictive distribution
+        """
+        response_dist = get_response_dist(model.family)
+        params = model.family.likelihood.params
+        response_aliased_name = get_aliased_name(model.response_component.response_term)
+
+        kwargs = {}
+        output_dataset_list = []
+
+        # In the posterior xr.Dataset we need to consider aliases.
+        # But we don't use aliases when passing kwargs to the PyMC distribution
+        for param in params:
+            # Extract posterior draws for the parent parameter
+            if param == model.family.likelihood.parent:
+                component = model.components[model.response_name]
+                var_name = f"{response_aliased_name}_mean"
+                kwargs[param] = posterior[var_name].to_numpy()
+                output_dataset_list.append(posterior[var_name])
+            else:
+                # Extract posterior draws for non-parent parameters
+                component = model.components[param]
+                component_aliased_name = component.alias if component.alias else param
+                var_name = f"{response_aliased_name}_{component_aliased_name}"
+                if var_name in posterior:
+                    kwargs[param] = posterior[var_name].to_numpy()
+                    output_dataset_list.append(posterior[var_name])
+                elif hasattr(component, "prior") and isinstance(component.prior, (int, float)):
+                    kwargs[param] = np.asarray(component.prior)
+
+        # Determine the array with largest number of dimensions
+        ndims_max = max(x.ndim for x in kwargs.values())
+
+        # Append a dimension when needed. Required to make `pm.draw()` work.
+        for key, values in kwargs.items():
+            kwargs[key] = expand_array(values, ndims_max)
+
+        # NOTE: Wouldn't it be better to always use parametrizations compatible with PyMC?
+        # The current approach allows more flexibility, but it's more painful.
+        if hasattr(model.family, "transform_backend_kwargs"):
+            kwargs = model.family.transform_backend_kwargs(kwargs)
+
+        output_array = pm.draw(response_dist.dist(**kwargs))
+        output_coords_all = xr.merge(output_dataset_list).coords
+
+        if hasattr(model.family, "KIND") and model.family.KIND == "Multivariate":
+            coord_names = (
+                "chain",
+                "draw",
+                response_aliased_name + "_obs",
+                response_aliased_name + "_mean_dim",
+            )
+        else:  # Assume it's univariate family
+            coord_names = ("chain", "draw", response_aliased_name + "_obs")
+
+        output_coords = {}
+        for coord_name in coord_names:
+            output_coords[coord_name] = output_coords_all[coord_name]
+        return xr.DataArray(output_array, coords=output_coords)
 
     def __str__(self):
-        msg_list = [f"Response distribution: {self.likelihood.name}", f"Link: {self.link.name}"]
-        if self.likelihood.priors:
-            priors_msg = "\n  ".join([f"{k} ~ {v}" for k, v in self.likelihood.priors.items()])
-            msg_list += [f"Priors:\n  {priors_msg}"]
-        msg = "\n".join(msg_list)
-        return msg
+        msg_list = [f"Family: {self.name}", f"Likelihood: {self.likelihood}", f"Link: {self.link}"]
+        return "\n".join(msg_list)
 
     def __repr__(self):
         return self.__str__()
+
+
+def get_response_dist(family):
+    """Get the PyMC distribution for the response
+
+    Parameters
+    ----------
+    family : bambi.Family
+        The family for which the response distribution is wanted
+
+    Returns
+    -------
+    pm.Distribution
+        The response distribution
+    """
+    if family.likelihood.dist:
+        dist = family.likelihood.dist
+    else:
+        dist = getattr(pm, family.likelihood.name)
+    return dist
+
+
+def expand_array(x, ndim):
+    """Add dimensions to an array to match the number of desired dimensions
+
+    If x.ndim < ndim, it adds ndim - x.ndim dimensions after the last axis. If not, it is left
+    untouched.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        The array
+    ndim : int
+        The number of desired dimensions
+
+    Returns
+    -------
+    np.ndarray
+        The array with the expanded dimensions
+    """
+    if x.ndim == ndim:
+        return x
+    dims_to_expand = tuple(range(ndim - 1, x.ndim - 1, -1))
+    return np.expand_dims(x, dims_to_expand)

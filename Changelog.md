@@ -4,13 +4,82 @@
 
 ### New features
 
+* Refactored the codebase to support distributional models (#607)
+* Added a default method to handle posterior predictive sampling for custom families (#625)
+* `plot_cap()` gains a new argument `target` that allows to plot different parameters of the response distribution (#627)
+
 ### Maintenance and fixes
+
+* Moved the `tests` directory to the root of the repository (#607)
+* Don't pass `dims` to the response of the likelihood distribution anymore (#629)
 
 ### Documentation
 
+* Update examples to work with the new internals (#607)
+* Fixed figure in the Sleepstudy example (#607)
+
 ### Deprecation
 
-# Changelog
+* Removed versioned documentation webpage (#616)
+* Removed correlated priors for group-specific terms (#607)
+* Dictionary with tuple keys are not allowed for priors anymore (#607)
+
+## 0.9.3
+
+### Maintenance and fixes
+
+* Update to PyMC >= 5, which means we use PyTensor instead of Aesara now (#613, #614)
+
+## 0.9.2
+
+### New features
+
+* Implement `censored()` (#581)
+* Add `Formula` class (#585)
+* Add common numpy transforms to extra_namespace (#589)
+* Add `AsymmetricLaplace` family for Quantile Regression (#591)
+* Add 'transforms' argument to `plot_cap()` (#594)
+* Add panel covariates to `plot_cap()` and make it more flexible (#596)
+
+### Maintenance and fixes
+
+* Reimplemented predictions to make better usage of xarray data structures (#573)
+* Keep 0 dimensional parameters as 0 dimensional instead of 1 dimensional (#575)
+* Refactor terms for modularity and extensibility (#582)
+* Remove seed argument from `model.initial_point()` (#592)
+* Add build check function on prior predictive and plot prior (#605)
+
+### Documentation
+
+* Add quantile regression example (#608)
+
+### Deprecation
+
+* Remove `automatic_priors` argument from `Model` (#603)
+* Remove string option for data input in `Model` (#604)
+
+## 0.9.1
+
+### New features
+
+* Add support for jax sampling via numpyro and blackjax samplers (#526)
+* Add Laplace family (#524)
+* Improve Laplace computation and integration (#555 and #563)
+
+### Maintenance and fixes
+
+* Ensure order variable is preserved when ploting priors (#529)
+* Treat offset accordingly (#534)
+* Refactor tests to share data generation code (#531)
+
+### Documentation
+
+* Update documentation following good inferencedata practices (#537)
+* Add logos to repo and docs (#542)
+
+### Deprecation
+
+* Deprecate method argument in favor of inference_method (#554)
 
 ## 0.9.0
 
