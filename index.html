@@ -353,7 +353,7 @@
 </section>
 <section id="dependencies">
 <h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading">#</a></h1>
-<p>Bambi is tested on Python 3.8+ and depends on ArviZ, formulae, NumPy, pandas and PyMC (see <a class="reference external" href="https://github.com/bambinos/bambi/blob/main/requirements.txt">requirements.txt</a> for version information).</p>
+<p>Bambi is tested on Python 3.8+ and depends on ArviZ, formulae, NumPy, pandas and PyMC (see <a class="reference external" href="https://github.com/bambinos/bambi/blob/main/pyproject.toml">pyproject.toml</a> for version information).</p>
 </section>
 <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
@@ -421,7 +421,7 @@
 </section>
 <section id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">#</a></h1>
-<p>We welcome contributions from interested individuals or groups! For information about contributing to Bambi, check out our instructions, policies, and guidelines <a class="reference external" href="https://github.com/bambinos/bambi/blob/main/CONTRIBUTING.md">here</a>.</p>
+<p>We welcome contributions from interested individuals or groups! For information about contributing to Bambi, check out our instructions, policies, and guidelines <a class="reference external" href="https://github.com/bambinos/bambi/blob/main/docs/CONTRIBUTING.md">here</a>.</p>
 </section>
 <section id="contributors">
 <h1>Contributors<a class="headerlink" href="#contributors" title="Permalink to this heading">#</a></h1>
@@ -635,8 +635,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/circular_regression.html">Circular Regression</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/quantile_regression.html">Quantile Regression</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/quantile_regression.html#Asymmetric-Laplace-distribution">Asymmetric Laplace distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/quantile_regression.html">Quantile Regression</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/quantile_regression.html#Asymmetric-Laplace-distribution">Asymmetric Laplace distribution</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
@@ -675,6 +677,11 @@
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#module-bambi.data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bambi.data</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.data.clear_data_home"><code class="docutils literal notranslate"><span class="pre">clear_data_home()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.data.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#module-bambi.plots"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bambi.plots</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.plots.create_cap_data"><code class="docutils literal notranslate"><span class="pre">create_cap_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.plots.plot_cap"><code class="docutils literal notranslate"><span class="pre">plot_cap()</span></code></a></li>
 </ul>
 </li>
 </ul>
