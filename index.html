@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>BAyesian Model-Building Interface (Bambi) in Python &#8212; Bambi 0.12.0.dev documentation</title>
+    <title>BAyesian Model-Building Interface (Bambi) in Python &#8212; Bambi 0.13.0.dev documentation</title>
   
   
   
@@ -28,15 +28,15 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e937bb23"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -707,6 +707,24 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="notebooks/plot_cap.html#Plotting-other-model-parameters">Plotting other model parameters</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/plot_comparisons.html">Plot Comparisons</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/plot_comparisons.html#Average-Predictive-Differences">Average Predictive Differences</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/plot_comparisons.html#Computing-Average-Predictive-Differences">Computing Average Predictive Differences</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/plot_comparisons.html#Zero-Inflated-Poisson">Zero Inflated Poisson</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/plot_comparisons.html#User-Provided-Values">User Provided Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/plot_comparisons.html#Multiple-contrast-values">Multiple contrast values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/plot_comparisons.html#Default-contrast-and-conditional-values">Default contrast and conditional values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/plot_comparisons.html#Unit-level-contrasts">Unit level contrasts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/plot_comparisons.html#Logistic-Regression">Logistic Regression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/plot_comparisons.html#Comparison-types">Comparison types</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
@@ -748,8 +766,10 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#module-bambi.plots"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bambi.plots</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.plots.create_cap_data"><code class="docutils literal notranslate"><span class="pre">create_cap_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.plots.comparisons"><code class="docutils literal notranslate"><span class="pre">comparisons()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.plots.plot_cap"><code class="docutils literal notranslate"><span class="pre">plot_cap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.plots.plot_comparison"><code class="docutils literal notranslate"><span class="pre">plot_comparison()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#bambi.plots.predictions"><code class="docutils literal notranslate"><span class="pre">predictions()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -878,7 +898,7 @@ document.write(`
       
         <div class="footer-item">
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.0.1.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>
