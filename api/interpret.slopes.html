@@ -82,8 +82,12 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../notebooks/getting_started.html">
+ <span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link active" href="../api/index.html" aria-current="page">
- <span class="menu-text">Reference</span></a>
+ <span class="menu-text">API Reference</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../notebooks/index.html">
@@ -94,8 +98,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../CHANGELOG.md">
+    <a class="nav-link" href="../changelog.html">
  <span class="menu-text">Changelog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../contact.html">
+ <span class="menu-text">Contact</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/bambinos/bambi"><i class="bi bi-github" role="img">
@@ -282,14 +290,14 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="bambi.interpret.slopes" class="level1">
 <h1>interpret.slopes</h1>
-<p><code>interpret.slopes(model, idata, wrt, conditional=None, average_by=None, eps=0.0001, slope='dydx', use_hdi=True, prob=None, transforms=None)</code></p>
+<p><code>interpret.slopes(model, idata, wrt, conditional=None, average_by=None, eps=0.0001, slope='dydx', use_hdi=True, prob=None, transforms=None, sample_new_groups=False)</code></p>
 <p>Compute Conditional Adjusted Slopes</p>
 <section id="parameters" class="level2">
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="table">
 <colgroup>
-<col style="width: 2%">
-<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 6%">
 <col style="width: 87%">
 <col style="width: 2%">
 </colgroup>
@@ -322,13 +330,13 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>conditional</code></td>
-<td>(str, dict, list)</td>
-<td>The covariates we would like to condition on.</td>
+<td>(str, list, dict)</td>
+<td>The covariates we would like to condition on. If dict, keys are the covariate names and values are the values to condition on.</td>
 <td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td><code>average_by</code></td>
-<td>typing.Union[str, list, bool, None]</td>
+<td>Union[str, list, bool, None]</td>
 <td>The covariates we would like to average by. The passed covariate(s) will marginalize over the other covariates in the model. If True, it averages over all covariates in the model to obtain the average estimate. Defaults to <code>None</code>.</td>
 <td><code>None</code></td>
 </tr>
@@ -353,7 +361,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><code>prob</code></td>
 <td>float</td>
-<td>The probability for the credibility intervals. Must be between 0 and 1. Defaults to 0.94. Changing the global variable <code>az.rcParam["stats.hdi_prob"]</code> affects this default.</td>
+<td>The probability for the credibility intervals. Must be between 0 and 1. Defaults to 0.94. Changing the global variable <code>az.rcParams["stats.hdi_prob"]</code> affects this default.</td>
 <td><code>None</code></td>
 </tr>
 <tr class="even">
@@ -362,6 +370,12 @@ ul.task-list li input[type="checkbox"] {
 <td>Transformations that are applied to each of the variables being plotted. The keys are the name of the variables, and the values are functions to be applied. Defaults to <code>None</code>.</td>
 <td><code>None</code></td>
 </tr>
+<tr class="odd">
+<td><code>sample_new_groups</code></td>
+<td>bool</td>
+<td>If the model contains group-level effects, and data is passed for unseen groups, whether to sample from the new groups. Defaults to <code>False</code>.</td>
+<td><code>False</code></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -369,8 +383,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="returns">Returns</h2>
 <table class="table">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 87%">
+<col style="width: 13%">
+<col style="width: 86%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -390,8 +404,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="raises">Raises</h2>
 <table class="table">
 <colgroup>
-<col style="width: 4%">
-<col style="width: 95%">
+<col style="width: 3%">
+<col style="width: 96%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -402,7 +416,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td>ValueError</td>
-<td>If length of <code>wrt</code> is greater than 1. If <code>conditional</code> is <code>None</code> and <code>wrt</code> is passed more than 2 values. If <code>conditional</code> is <code>None</code> and default <code>wrt</code> has more than 2 unique values. If <code>slope</code> is not ‘dydx’, ‘dyex’, ‘eyex’, or ‘eydx’. If <code>prob</code> is not &gt; 0 and &lt; 1.</td>
+<td>If length of <code>wrt</code> is greater than 1. If <code>conditional</code> is <code>None</code> and <code>wrt</code> is passed more than 2 values. If <code>conditional</code> is <code>None</code> and default <code>wrt</code> has more than 2 unique values. If <code>conditional</code> is a list and the length is greater than 3. If <code>slope</code> is not ‘dydx’, ‘dyex’, ‘eyex’, or ‘eydx’. If <code>prob</code> is not &gt; 0 and &lt; 1.</td>
 </tr>
 </tbody>
 </table>
@@ -560,7 +574,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center">© Copyright 2023, The developers of Bambi.</div>
+      <div class="nav-footer-center">© Copyright 2024, The developers of Bambi.</div>
   </div>
 </footer>
 

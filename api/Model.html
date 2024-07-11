@@ -82,8 +82,12 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../notebooks/getting_started.html">
+ <span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link active" href="../api/index.html" aria-current="page">
- <span class="menu-text">Reference</span></a>
+ <span class="menu-text">API Reference</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../notebooks/index.html">
@@ -94,8 +98,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../CHANGELOG.md">
+    <a class="nav-link" href="../changelog.html">
  <span class="menu-text">Changelog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../contact.html">
+ <span class="menu-text">Contact</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/bambinos/bambi"><i class="bi bi-github" role="img">
@@ -272,6 +280,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
   <ul class="collapse">
   <li><a href="#bambi.Model.build" id="toc-bambi.Model.build" class="nav-link" data-scroll-target="#bambi.Model.build">build</a></li>
+  <li><a href="#bambi.Model.compute_log_likelihood" id="toc-bambi.Model.compute_log_likelihood" class="nav-link" data-scroll-target="#bambi.Model.compute_log_likelihood">compute_log_likelihood</a></li>
   <li><a href="#bambi.Model.fit" id="toc-bambi.Model.fit" class="nav-link" data-scroll-target="#bambi.Model.fit">fit</a></li>
   <li><a href="#bambi.Model.graph" id="toc-bambi.Model.graph" class="nav-link" data-scroll-target="#bambi.Model.graph">graph</a></li>
   <li><a href="#bambi.Model.plot_priors" id="toc-bambi.Model.plot_priors" class="nav-link" data-scroll-target="#bambi.Model.plot_priors">plot_priors</a></li>
@@ -297,7 +306,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="table">
 <colgroup>
-<col style="width: 2%">
+<col style="width: 3%">
 <col style="width: 4%">
 <col style="width: 90%">
 <col style="width: 2%">
@@ -372,6 +381,12 @@ ul.task-list li input[type="checkbox"] {
 <td><code>True</code></td>
 </tr>
 <tr class="odd">
+<td><code>center_predictors</code></td>
+<td>bool</td>
+<td>If <code>True</code> (default), and if there is an intercept in the common terms, the data is centered by subtracting the mean. The centering is undone after sampling to provide the actual intercept in all distributional components that have an intercept. Note that this changes the interpretation of the prior on the intercept because it refers to the intercept of the centered data.</td>
+<td><code>True</code></td>
+</tr>
+<tr class="even">
 <td><code>extra_namespace</code></td>
 <td>dict</td>
 <td>Additional user supplied variables with transformations or data to include in the environment where the formula is evaluated. Defaults to <code>None</code>.</td>
@@ -395,30 +410,34 @@ ul.task-list li input[type="checkbox"] {
 <td>Set up the model for sampling/fitting.</td>
 </tr>
 <tr class="even">
+<td><a href="#bambi.Model.compute_log_likelihood">compute_log_likelihood</a></td>
+<td>Compute the model’s log-likelihood</td>
+</tr>
+<tr class="odd">
 <td><a href="#bambi.Model.fit">fit</a></td>
 <td>Fit the model using PyMC.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#bambi.Model.graph">graph</a></td>
 <td>Produce a graphviz Digraph from a built Bambi model.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#bambi.Model.plot_priors">plot_priors</a></td>
 <td>Samples from the prior distribution and plots its marginals.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#bambi.Model.predict">predict</a></td>
 <td>Predict method for Bambi models</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#bambi.Model.prior_predictive">prior_predictive</a></td>
 <td>Generate samples from the prior predictive distribution.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#bambi.Model.set_alias">set_alias</a></td>
 <td>Set aliases for the terms and auxiliary parameters in the model</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#bambi.Model.set_priors">set_priors</a></td>
 <td>Set priors for one or more existing terms.</td>
 </tr>
@@ -447,12 +466,74 @@ ul.task-list li input[type="checkbox"] {
 </table>
 </section>
 </section>
-<section id="bambi.Model.fit" class="level3">
-<h3 class="anchored" data-anchor-id="bambi.Model.fit">fit</h3>
-<p><code>Model.fit(self, draws=1000, tune=1000, discard_tuned_samples=True, omit_offsets=True, include_mean=False, inference_method='mcmc', init='auto', n_init=50000, chains=None, cores=None, random_seed=None, **kwargs)</code></p>
-<p>Fit the model using PyMC.</p>
+<section id="bambi.Model.compute_log_likelihood" class="level3">
+<h3 class="anchored" data-anchor-id="bambi.Model.compute_log_likelihood">compute_log_likelihood</h3>
+<p><code>Model.compute_log_likelihood(self, idata, data=None, inplace=True)</code></p>
+<p>Compute the model’s log-likelihood</p>
+<p>NOTE: This is a new feature and it may not work in all cases.</p>
 <section id="parameters-1" class="level4">
 <h4 class="anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="table">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 11%">
+<col style="width: 77%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>idata</code></td>
+<td>InferenceData</td>
+<td>The <code>InferenceData</code> instance returned by <code>.fit()</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>data</code></td>
+<td>pandas.DataFrame or None</td>
+<td>An optional data frame with values for the predictors and the response on which the model’s log-likelihood function is evaluated. If omitted, the original dataset is used.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>inplace</code></td>
+<td>bool</td>
+<td>If True<code>it will modify</code>idata<code>in-place. Otherwise, it will return a copy of</code>idata<code>with the</code>log_likelihood<code>group added.                                                |</code>True`</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4">
+<h4 class="anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>InferenceData or None</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="bambi.Model.fit" class="level3">
+<h3 class="anchored" data-anchor-id="bambi.Model.fit">fit</h3>
+<p><code>Model.fit(self, draws=1000, tune=1000, discard_tuned_samples=True, omit_offsets=True, include_mean=None, include_response_params=False, inference_method='mcmc', init='auto', n_init=50000, chains=None, cores=None, random_seed=None, **kwargs)</code></p>
+<p>Fit the model using PyMC.</p>
+<section id="parameters-2" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-2">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 1%">
@@ -496,46 +577,52 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><code>include_mean</code></td>
 <td>bool</td>
-<td>Compute the posterior of the mean response. Defaults to <code>False</code>.</td>
-<td><code>False</code></td>
+<td>Deprecated. Use <code>include_response_params</code>.</td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
-<td><code>inference_method</code></td>
-<td>str</td>
-<td>The method to use for fitting the model. By default, <code>"mcmc"</code>. This automatically assigns a MCMC method best suited for each kind of variables, like NUTS for continuous variables and Metropolis for non-binary discrete ones. Alternatively, <code>"vi"</code>, in which case the model will be fitted using variational inference as implemented in PyMC using the <code>fit</code> function. Finally, <code>"laplace"</code>, in which case a Laplace approximation is used and is not recommended other than for pedagogical use. To use the PyMC numpyro and blackjax samplers, use <code>nuts_numpyro</code> or <code>nuts_blackjax</code> respectively. Both methods will only work if you can use NUTS sampling, so your model must be differentiable.</td>
-<td><code>'mcmc'</code></td>
+<td><code>include_response_params</code></td>
+<td>bool</td>
+<td>Include parameters of the response distribution in the output. These usually take more space than other parameters as there’s one of them per observation. Defaults to <code>False</code>.</td>
+<td><code>False</code></td>
 </tr>
 <tr class="odd">
+<td><code>inference_method</code></td>
+<td>str</td>
+<td>The method to use for fitting the model. By default, <code>"mcmc"</code>. This automatically assigns a MCMC method best suited for each kind of variables, like NUTS for continuous variables and Metropolis for non-binary discrete ones. Alternatively, <code>"vi"</code>, in which case the model will be fitted using variational inference as implemented in PyMC using the <code>fit</code> function. Finally, <code>"laplace"</code>, in which case a Laplace approximation is used and is not recommended other than for pedagogical use. To get a list of JAX based inference methods, call <code>bmb.inference_methods.names['bayeux']</code>. This will return a dictionary of the available methods such as <code>blackjax_nuts</code>, <code>numpyro_nuts</code>, among others.</td>
+<td><code>'mcmc'</code></td>
+</tr>
+<tr class="even">
 <td><code>init</code></td>
 <td>str</td>
 <td>Initialization method. Defaults to <code>"auto"</code>. The available methods are: * auto: Use <code>"jitter+adapt_diag"</code> and if this method fails it uses <code>"adapt_diag"</code>. * adapt_diag: Start with a identity mass matrix and then adapt a diagonal based on the variance of the tuning samples. All chains use the test value (usually the prior mean) as starting point. * jitter+adapt_diag: Same as <code>"adapt_diag"</code>, but use test value plus a uniform jitter in [-1, 1] as starting point in each chain. * advi+adapt_diag: Run ADVI and then adapt the resulting diagonal mass matrix based on the sample variance of the tuning samples. * advi+adapt_diag_grad: Run ADVI and then adapt the resulting diagonal mass matrix based on the variance of the gradients during tuning. This is <strong>experimental</strong> and might be removed in a future release. * advi: Run ADVI to estimate posterior mean and diagonal mass matrix. * advi_map: Initialize ADVI with MAP and use MAP as starting point. * map: Use the MAP as starting point. This is strongly discouraged. * adapt_full: Adapt a dense mass matrix using the sample covariances. All chains use the test value (usually the prior mean) as starting point. * jitter+adapt_full: Same as <code>"adapt_full"</code>, but use test value plus a uniform jitter in [-1, 1] as starting point in each chain.</td>
 <td><code>'auto'</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>n_init</code></td>
 <td>int</td>
 <td>Number of initialization iterations. Only works for <code>"advi"</code> init methods.</td>
 <td><code>50000</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>chains</code></td>
 <td>int</td>
 <td>The number of chains to sample. Running independent chains is important for some convergence statistics and can also reveal multiple modes in the posterior. If <code>None</code>, then set to either <code>cores</code> or 2, whichever is larger.</td>
 <td><code>None</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>cores</code></td>
 <td>int</td>
 <td>The number of chains to run in parallel. If <code>None</code>, it is equal to the number of CPUs in the system unless there are more than 4 CPUs, in which case it is set to 4.</td>
 <td><code>None</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>random_seed</code></td>
 <td>int or list of ints</td>
 <td>A list is accepted if cores is greater than one.</td>
 <td><code>None</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>**kwargs</code></td>
 <td></td>
 <td>For other kwargs see the documentation for <code>PyMC.sample()</code>.</td>
@@ -544,8 +631,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="returns-1" class="level4">
-<h4 class="anchored" data-anchor-id="returns-1">Returns</h4>
+<section id="returns-2" class="level4">
+<h4 class="anchored" data-anchor-id="returns-2">Returns</h4>
 <table class="table">
 <colgroup>
 <col style="width: 84%">
@@ -563,10 +650,14 @@ ul.task-list li input[type="checkbox"] {
 <td></td>
 </tr>
 <tr class="even">
-<td>“nuts_numpyro”, “nuts_blackjax” or “laplace”.</td>
+<td>“laplace”, or one of the MCMC methods in</td>
 <td></td>
 </tr>
 <tr class="odd">
+<td><code>bmb.inference_methods.names\['bayeux'\]\['mcmc\]</code>.</td>
+<td></td>
+</tr>
+<tr class="even">
 <td>An <code>Approximation</code> object if <code>"vi"</code>.</td>
 <td></td>
 </tr>
@@ -580,8 +671,8 @@ ul.task-list li input[type="checkbox"] {
 <p>Produce a graphviz Digraph from a built Bambi model.</p>
 <p>Requires graphviz, which may be installed most easily with <code>conda install -c conda-forge python-graphviz</code></p>
 <p>Alternatively, you may install the <code>graphviz</code> binaries yourself, and then <code>pip install graphviz</code> to get the python bindings. See http://graphviz.readthedocs.io/en/stable/manual.html for more information.</p>
-<section id="parameters-2" class="level4">
-<h4 class="anchored" data-anchor-id="parameters-2">Parameters</h4>
+<section id="parameters-3" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-3">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 4%">
@@ -631,8 +722,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="returns-2" class="level4">
-<h4 class="anchored" data-anchor-id="returns-2">Returns</h4>
+<section id="returns-3" class="level4">
+<h4 class="anchored" data-anchor-id="returns-3">Returns</h4>
 <table class="table">
 <thead>
 <tr class="header">
@@ -670,8 +761,8 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="bambi.Model.plot_priors">plot_priors</h3>
 <p><code>Model.plot_priors(self, draws=5000, var_names=None, random_seed=None, figsize=None, textsize=None, hdi_prob=None, round_to=2, point_estimate='mean', kind='kde', bins=None, omit_offsets=True, omit_group_specific=True, ax=None, **kwargs)</code></p>
 <p>Samples from the prior distribution and plots its marginals.</p>
-<section id="parameters-3" class="level4">
-<h4 class="anchored" data-anchor-id="parameters-3">Parameters</h4>
+<section id="parameters-4" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-4">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 6%">
@@ -697,7 +788,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td><code>var_names</code></td>
 <td>str or list</td>
-<td>A list of names of variables for which to compute the posterior predictive distribution. Defaults to <code>None</code> which means to include both observed and unobserved RVs.</td>
+<td>A list of names of variables for which to compute the prior predictive distribution. Defaults to <code>None</code> which means to include both observed and unobserved RVs.</td>
 <td><code>None</code></td>
 </tr>
 <tr class="odd">
@@ -775,8 +866,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="returns-3" class="level4">
-<h4 class="anchored" data-anchor-id="returns-3">Returns</h4>
+<section id="returns-4" class="level4">
+<h4 class="anchored" data-anchor-id="returns-4">Returns</h4>
 <table class="table">
 <thead>
 <tr class="header">
@@ -795,17 +886,17 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="bambi.Model.predict" class="level3">
 <h3 class="anchored" data-anchor-id="bambi.Model.predict">predict</h3>
-<p><code>Model.predict(self, idata, kind='mean', data=None, inplace=True, include_group_specific=True, sample_new_groups=False)</code></p>
+<p><code>Model.predict(self, idata, kind='response_params', data=None, inplace=True, include_group_specific=True, sample_new_groups=False)</code></p>
 <p>Predict method for Bambi models</p>
 <p>Obtains in-sample and out-of-sample predictions from a fitted Bambi model.</p>
-<section id="parameters-4" class="level4">
-<h4 class="anchored" data-anchor-id="parameters-4">Parameters</h4>
+<section id="parameters-5" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-5">Parameters</h4>
 <table class="table">
 <colgroup>
-<col style="width: 5%">
-<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 4%">
 <col style="width: 86%">
-<col style="width: 2%">
+<col style="width: 3%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -825,8 +916,8 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td><code>kind</code></td>
 <td>str</td>
-<td>Indicates the type of prediction required. Can be <code>"mean"</code> or <code>"pps"</code>. The first returns draws from the posterior distribution of the mean, while the latter returns the draws from the posterior predictive distribution (i.e.&nbsp;the posterior probability distribution for a new observation) in addition to the mean posterior distribution. Defaults to <code>"mean"</code>.</td>
-<td><code>'mean'</code></td>
+<td>Indicates the type of prediction required. Can be <code>"response_params"</code> or <code>"response"</code>. The first returns draws from the posterior distribution of the likelihood parameters, while the latter returns the draws from the posterior predictive distribution (i.e.&nbsp;the posterior probability distribution for a new observation) in addition to the posterior distribution. Defaults to <code>"response_params"</code>.</td>
+<td><code>'response_params'</code></td>
 </tr>
 <tr class="odd">
 <td><code>data</code></td>
@@ -837,26 +928,14 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td><code>inplace</code></td>
 <td>bool</td>
-<td>If <code>True</code> it will modify <code>idata</code> in-place. Otherwise, it will return a copy of <code>idata</code> with the predictions added. If <code>kind="mean"</code>, a new variable ending in <code>"_mean"</code> is added to the <code>posterior</code> group. If <code>kind="pps"</code>, it appends a <code>posterior_predictive</code> group to <code>idata</code>. If any of these already exist, it will be overwritten.</td>
-<td><code>True</code></td>
-</tr>
-<tr class="odd">
-<td><code>include_group_specific</code></td>
-<td>bool</td>
-<td>Determines if predictions incorporate group-specific effects. If <code>False</code>, predictions are made with common effects only (i.e.&nbsp;group specific are set to zero). Defaults to <code>True</code>.</td>
-<td><code>True</code></td>
-</tr>
-<tr class="even">
-<td><code>sample_new_groups</code></td>
-<td>bool</td>
-<td>Specifies if it is allowed to obtain predictions for new groups of group-specific terms. When <code>True</code>, each posterior sample for the new groups is drawn from the posterior draws of a randomly selected existing group. Since different groups may be selected at each draw, the end result represents the variation across existing groups. The method implemented is quivalent to <code>sample_new_levels="uncertainty"</code> in brms.</td>
-<td><code>False</code></td>
+<td>If <code>True</code> it will modify <code>idata</code> in-place. Otherwise, it will return a copy of <code>idata</code> with the predictions added. If <code>kind="response_params"</code>, a new variable with the name of the parent parameter, e.g.&nbsp;<code>"mu"</code> and <code>"sigma" for a Gaussian likelihood, or</code>“p”<code>for a Bernoulli likelihood, is added to the</code>posterior<code>group. If</code>kind=“response”<code>, it appends a</code>posterior_predictive<code>group to</code>idata<code>. If any of these already exist, it will be overwritten. | `True`              | | `include_group_specific` | bool                     | Determines if predictions incorporate group-specific effects. If</code>False<code>, predictions are made with common effects only (i.e. group specific are set to zero). Defaults to</code>True<code>.                                                                                                                                                                                                                                                                                                    | `True`              | | `sample_new_groups`      | bool                     | Specifies if it is allowed to obtain predictions for new groups of group-specific terms. When</code>True`<code>, each posterior sample for the new groups is drawn from the posterior draws of a randomly selected existing group. Since different groups may be selected at each draw, the end result represents the variation across existing groups. The method implemented is quivalent to</code>sample_new_levels=“uncertainty”<code>in brms.                                                          |</code>False`</td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="returns-4" class="level4">
-<h4 class="anchored" data-anchor-id="returns-4">Returns</h4>
+<section id="returns-5" class="level4">
+<h4 class="anchored" data-anchor-id="returns-5">Returns</h4>
 <table class="table">
 <thead>
 <tr class="header">
@@ -877,8 +956,8 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="bambi.Model.prior_predictive">prior_predictive</h3>
 <p><code>Model.prior_predictive(self, draws=500, var_names=None, omit_offsets=True, random_seed=None)</code></p>
 <p>Generate samples from the prior predictive distribution.</p>
-<section id="parameters-5" class="level4">
-<h4 class="anchored" data-anchor-id="parameters-5">Parameters</h4>
+<section id="parameters-6" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-6">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 8%">
@@ -922,8 +1001,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="returns-5" class="level4">
-<h4 class="anchored" data-anchor-id="returns-5">Returns</h4>
+<section id="returns-6" class="level4">
+<h4 class="anchored" data-anchor-id="returns-6">Returns</h4>
 <table class="table">
 <colgroup>
 <col style="width: 13%">
@@ -948,8 +1027,8 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="bambi.Model.set_alias">set_alias</h3>
 <p><code>Model.set_alias(self, aliases)</code></p>
 <p>Set aliases for the terms and auxiliary parameters in the model</p>
-<section id="parameters-6" class="level4">
-<h4 class="anchored" data-anchor-id="parameters-6">Parameters</h4>
+<section id="parameters-7" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-7">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 9%">
@@ -975,8 +1054,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="returns-6" class="level4">
-<h4 class="anchored" data-anchor-id="returns-6">Returns</h4>
+<section id="returns-7" class="level4">
+<h4 class="anchored" data-anchor-id="returns-7">Returns</h4>
 <table class="table">
 <thead>
 <tr class="header">
@@ -997,8 +1076,8 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="bambi.Model.set_priors">set_priors</h3>
 <p><code>Model.set_priors(self, priors=None, common=None, group_specific=None)</code></p>
 <p>Set priors for one or more existing terms.</p>
-<section id="parameters-7" class="level4">
-<h4 class="anchored" data-anchor-id="parameters-7">Parameters</h4>
+<section id="parameters-8" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-8">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 7%">
@@ -1036,8 +1115,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="returns-7" class="level4">
-<h4 class="anchored" data-anchor-id="returns-7">Returns</h4>
+<section id="returns-8" class="level4">
+<h4 class="anchored" data-anchor-id="returns-8">Returns</h4>
 <table class="table">
 <thead>
 <tr class="header">
@@ -1208,7 +1287,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center">© Copyright 2023, The developers of Bambi.</div>
+      <div class="nav-footer-center">© Copyright 2024, The developers of Bambi.</div>
   </div>
 </footer>
 

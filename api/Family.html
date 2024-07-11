@@ -145,8 +145,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../notebooks/getting_started.html">
+ <span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link active" href="../api/index.html" aria-current="page">
- <span class="menu-text">Reference</span></a>
+ <span class="menu-text">API Reference</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../notebooks/index.html">
@@ -157,8 +161,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  <span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../CHANGELOG.md">
+    <a class="nav-link" href="../changelog.html">
  <span class="menu-text">Changelog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../contact.html">
+ <span class="menu-text">Contact</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/bambinos/bambi"><i class="bi bi-github" role="img">
@@ -333,8 +341,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
   <ul class="collapse">
+  <li><a href="#bambi.Family.log_likelihood" id="toc-bambi.Family.log_likelihood" class="nav-link" data-scroll-target="#bambi.Family.log_likelihood">log_likelihood</a></li>
   <li><a href="#bambi.Family.posterior_predictive" id="toc-bambi.Family.posterior_predictive" class="nav-link" data-scroll-target="#bambi.Family.posterior_predictive">posterior_predictive</a></li>
   <li><a href="#bambi.Family.set_default_priors" id="toc-bambi.Family.set_default_priors" class="nav-link" data-scroll-target="#bambi.Family.set_default_priors">set_default_priors</a></li>
   </ul></li>
@@ -355,9 +365,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="table">
 <colgroup>
-<col style="width: 3%">
-<col style="width: 22%">
-<col style="width: 70%">
+<col style="width: 4%">
+<col style="width: 13%">
+<col style="width: 78%">
 <col style="width: 3%">
 </colgroup>
 <thead>
@@ -383,7 +393,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="odd">
 <td><code>link</code></td>
-<td>typing.Union[str, typing.Dict[str, typing.Union[str, bambi.families.link.Link]]]</td>
+<td>Union[str, Dict[str, Union[str, Link]]]</td>
 <td>The link function that’s used for every parameter in the likelihood function. Keys are the names of the parameters and values are the link functions. These can be a <code>str</code> with a name or a <code>bambi.families.Link</code> instance. The link function transforms the linear predictors.</td>
 <td><em>required</em></td>
 </tr>
@@ -403,6 +413,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> family <span class="op">=</span> bmb.Family(<span class="st">"bernoulli"</span>, likelihood, <span class="st">"logit"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> bmb.Model(<span class="st">"y ~ x"</span>, data, family<span class="op">=</span>family)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
+<section id="attributes" class="level2">
+<h2 class="anchored" data-anchor-id="attributes">Attributes</h2>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#bambi.Family.auxiliary_parameters">auxiliary_parameters</a></td>
+<td>Get names of auxiliary parameters</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <table class="table">
@@ -414,27 +441,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#bambi.Family.log_likelihood">log_likelihood</a></td>
+<td>Evaluate the model log-likelihood</td>
+</tr>
+<tr class="even">
 <td><a href="#bambi.Family.posterior_predictive">posterior_predictive</a></td>
 <td>Get draws from the posterior predictive distribution</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#bambi.Family.set_default_priors">set_default_priors</a></td>
 <td>Set default priors for non-parent parameters</td>
 </tr>
 </tbody>
 </table>
-<section id="bambi.Family.posterior_predictive" class="level3">
-<h3 class="anchored" data-anchor-id="bambi.Family.posterior_predictive">posterior_predictive</h3>
-<p><code>Family.posterior_predictive(self, model, posterior, **kwargs)</code></p>
-<p>Get draws from the posterior predictive distribution</p>
-<p>This function works for almost all the families. It grabs the draws for the parameters needed in the response distribution, and then gets samples from the posterior predictive distribution using <code>pm.draw()</code>. It won’t work when the response distribution requires parameters that are not available in <code>posterior</code>.</p>
+<section id="bambi.Family.log_likelihood" class="level3">
+<h3 class="anchored" data-anchor-id="bambi.Family.log_likelihood">log_likelihood</h3>
+<p><code>Family.log_likelihood(self, model, posterior, data, **kwargs)</code></p>
+<p>Evaluate the model log-likelihood</p>
+<p>This method uses <code>pm.logp()</code>.</p>
 <section id="parameters-1" class="level4">
 <h4 class="anchored" data-anchor-id="parameters-1">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 5%">
-<col style="width: 6%">
-<col style="width: 83%">
+<col style="width: 5%">
+<col style="width: 84%">
 <col style="width: 4%">
 </colgroup>
 <thead>
@@ -454,7 +485,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td><code>posterior</code></td>
-<td>xarray.Dataset</td>
+<td>xr.Dataset</td>
 <td>The xarray dataset that contains the draws for all the parameters in the posterior. It must contain the parameters that are needed in the distribution of the response, or the parameters that allow to derive them.</td>
 <td><em>required</em></td>
 </tr>
@@ -471,8 +502,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="returns">Returns</h4>
 <table class="table">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 80%">
+<col style="width: 11%">
+<col style="width: 88%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -482,7 +513,73 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </thead>
 <tbody>
 <tr class="odd">
-<td>xarray.DataArray</td>
+<td>xr.DataArray</td>
+<td>A data array with the value of the log-likelihood for each chain, draw, and value of the response variable.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="bambi.Family.posterior_predictive" class="level3">
+<h3 class="anchored" data-anchor-id="bambi.Family.posterior_predictive">posterior_predictive</h3>
+<p><code>Family.posterior_predictive(self, model, posterior, **kwargs)</code></p>
+<p>Get draws from the posterior predictive distribution</p>
+<p>This function works for almost all the families. It grabs the draws for the parameters needed in the response distribution, and then gets samples from the posterior predictive distribution using <code>pm.draw()</code>. It won’t work when the response distribution requires parameters that are not available in <code>posterior</code>.</p>
+<section id="parameters-2" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 84%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>model</code></td>
+<td>bambi.Model</td>
+<td>The model</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>posterior</code></td>
+<td>xr.Dataset</td>
+<td>The xarray dataset that contains the draws for all the parameters in the posterior. It must contain the parameters that are needed in the distribution of the response, or the parameters that allow to derive them.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td><code>kwargs</code></td>
+<td></td>
+<td>Parameters that are used to get draws but do not appear in the posterior object or other configuration parameters. For instance, the ‘n’ in binomial models and multinomial models.</td>
+<td><code>{}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4">
+<h4 class="anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 83%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>xr.DataArray</td>
 <td>A data array with the draws from the posterior predictive distribution</td>
 </tr>
 </tbody>
@@ -493,8 +590,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="bambi.Family.set_default_priors">set_default_priors</h3>
 <p><code>Family.set_default_priors(self, priors)</code></p>
 <p>Set default priors for non-parent parameters</p>
-<section id="parameters-2" class="level4">
-<h4 class="anchored" data-anchor-id="parameters-2">Parameters</h4>
+<section id="parameters-3" class="level4">
+<h4 class="anchored" data-anchor-id="parameters-3">Parameters</h4>
 <table class="table">
 <colgroup>
 <col style="width: 8%">
@@ -675,7 +772,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center">© Copyright 2023, The developers of Bambi.</div>
+      <div class="nav-footer-center">© Copyright 2024, The developers of Bambi.</div>
   </div>
 </footer>
 
