@@ -491,11 +491,11 @@ window.Quarto = {
    
   <ul>
   <li><a href="#zero-inflated-outcomes" id="toc-zero-inflated-outcomes" class="nav-link active" data-scroll-target="#zero-inflated-outcomes">Zero inflated outcomes</a></li>
-  <li><a href="#zero-inflated-poisson" id="toc-zero-inflated-poisson" class="nav-link" data-scroll-target="#zero-inflated-poisson">Zero inflated poisson</a>
+  <li><a href="#zero-inflated-poisson" id="toc-zero-inflated-poisson" class="nav-link" data-scroll-target="#zero-inflated-poisson">Zero inflated Poisson</a>
   <ul class="collapse">
   <li><a href="#zip-regression-model" id="toc-zip-regression-model" class="nav-link" data-scroll-target="#zip-regression-model">ZIP regression model</a></li>
   </ul></li>
-  <li><a href="#hurdle-poisson" id="toc-hurdle-poisson" class="nav-link" data-scroll-target="#hurdle-poisson">Hurdle poisson</a>
+  <li><a href="#hurdle-poisson" id="toc-hurdle-poisson" class="nav-link" data-scroll-target="#hurdle-poisson">Hurdle Poisson</a>
   <ul class="collapse">
   <li><a href="#hurdle-regression-model" id="toc-hurdle-regression-model" class="nav-link" data-scroll-target="#hurdle-regression-model">Hurdle regression model</a></li>
   </ul></li>
@@ -546,7 +546,7 @@ window.Quarto = {
 <p>There are two popular classes of models for modeling zero-inflated data: (1) ZIP, and (2) hurdle Poisson. First, the ZIP model is described and how to implement it in Bambi is outlined. Subsequently, the hurdle Poisson model and how to implement it is outlined thereafter.</p>
 </section>
 <section id="zero-inflated-poisson" class="level2">
-<h2 class="anchored" data-anchor-id="zero-inflated-poisson">Zero inflated poisson</h2>
+<h2 class="anchored" data-anchor-id="zero-inflated-poisson">Zero inflated Poisson</h2>
 <p>To model zero-inflated outcomes, the ZIP model uses a distribution that mixes two data generating processes. The first process generates zeros, and the second process uses a Poisson distribution to generate counts (of which some may be zero). The result of this mixture is a distribution that can be described as</p>
 <p><span class="math display">\[P(Y=0) = (1 - \psi) + \psi e^{-\mu}\]</span></p>
 <p><span class="math display">\[P(Y=y_i) = \psi \frac{e^{-\mu} \mu_{i}^y}{y_{i}!} \ \text{for} \ y_i = 1, 2, 3,...,n\]</span></p>
@@ -586,7 +586,7 @@ window.Quarto = {
 <p>where <span class="math inline">\(g\)</span> and <span class="math inline">\(h\)</span> are the link functions for each parameter. Bambi, by default, uses the log link for <span class="math inline">\(g\)</span> and the logit link for <span class="math inline">\(h\)</span>. Notice how there are two linear models and two link functions: one for each parameter in the <span class="math inline">\(\text{ZIPoisson}\)</span>. The parameters of the linear model differ, because any predictor such as <span class="math inline">\(X\)</span> may be associated differently with each part of the mixture. Actually, you don’t even need to use the same predictors in both linear models—but this beyond the scope of this notebook.</p>
 <section id="the-fish-dataset" class="level4">
 <h4 class="anchored" data-anchor-id="the-fish-dataset">The fish dataset</h4>
-<p>To demonstrate the ZIP regression model, we model and predict how many fish are caught by visitors at a state park using survey <a href="&quot;https://stats.idre.ucla.edu/stat/data/fish.csv&quot;">data</a>. Many visitors catch zero fish, either because they did not fish at all, or because they were unlucky. The dataset contains data on 250 groups that went to a state park to fish. Each group was questioned about how many fish they caught (<code>count</code>), how many children were in the group (<code>child</code>), how many people were in the group (<code>persons</code>), if they used a live bait (<code>livebait</code>) and whether or not they brought a camper to the park (<code>camper</code>).</p>
+<p>To demonstrate the ZIP regression model, we model and predict how many fish are caught by visitors at a state park using survey <a href="https://stats.idre.ucla.edu/stat/data/fish.csv">data</a>. Many visitors catch zero fish, either because they did not fish at all, or because they were unlucky. The dataset contains data on 250 groups that went to a state park to fish. Each group was questioned about how many fish they caught (<code>count</code>), how many children were in the group (<code>child</code>), how many people were in the group (<code>persons</code>), if they used a live bait (<code>livebait</code>) and whether or not they brought a camper to the park (<code>camper</code>).</p>
 <div id="cell-9" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fish_data <span class="op">=</span> pd.read_csv(<span class="st">"https://stats.idre.ucla.edu/stat/data/fish.csv"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">"count"</span>, <span class="st">"livebait"</span>, <span class="st">"camper"</span>, <span class="st">"persons"</span>, <span class="st">"child"</span>]</span>
@@ -1078,7 +1078,7 @@ Default computed for unspecified variable: camper, child, livebait</code></pre>
 </section>
 </section>
 <section id="hurdle-poisson" class="level2">
-<h2 class="anchored" data-anchor-id="hurdle-poisson">Hurdle poisson</h2>
+<h2 class="anchored" data-anchor-id="hurdle-poisson">Hurdle Poisson</h2>
 <p>Both ZIP and hurdle models both use two processes to generate data. The two models differ in their conceptualization of how the zeros are generated. In <span class="math inline">\(\text{ZIPoisson}\)</span>, the zeroes can come from any of the processes, while in the hurdle Poisson they come only from one of the processes. Thus, a hurdle model assumes zero and positive values are generated from two independent processes. In the hurdle model, there are two components: (1) a “structural” process such as a binary model for modeling whether the response variable is zero or not, and (2) a process using a truncated model such as a truncated Poisson for modeling the counts. The result of these two components is a distribution that can be described as</p>
 <p><span class="math display">\[P(Y=0) = 1 - \psi\]</span></p>
 <p><span class="math display">\[P(Y=y_i) = \psi \frac{e^{-\mu_i}\mu_{i}^{y_i} / y_i!}{1 - e^{-\mu_i}} \ \text{for} \ y_i = 1, 2, 3,...,n\]</span></p>
